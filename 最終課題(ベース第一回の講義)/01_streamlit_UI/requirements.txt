@@ -1,0 +1,13 @@
+streamlit
+pandas
+pyngrok
+ast
+langchain
+langchain-communtiy
+transformers
+accelerate
+pytest
+torch
+nltk
+scikit-learn
+janome

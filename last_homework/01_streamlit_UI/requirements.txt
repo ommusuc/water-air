@@ -1,9 +1,8 @@
 streamlit
 pandas
 pyngrok
-ast
 langchain
-langchain-communtiy
+langchain-community 
 transformers
 accelerate
 pytest
@@ -11,3 +10,4 @@ torch
 nltk
 scikit-learn
 janome
+bitsandbytes

@@ -1,13 +1,13 @@
 streamlit
 pandas
+torch
 pyngrok
-langchain
-langchain-community 
 transformers
 accelerate
-pytest
-torch
+janome
 nltk
 scikit-learn
 janome
+langchain
+langchain-community 
 bitsandbytes

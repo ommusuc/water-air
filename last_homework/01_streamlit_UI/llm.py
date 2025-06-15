@@ -10,42 +10,38 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 
 @st.cache_resource
 def load_model():
-    """LLMモデルをロードする"""
+    """量子化された LLM モデルをロードする"""
     try:
-        hf_token = st.secrets.get("huggingface", {}).get("token", None)
-        if not hf_token:
-            st.error("Hugging Face の API トークンが見つかりません。Streamlit の Secrets に設定してください。")
-            return None
-
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        st.info(f"Using device: {device}") # 使用デバイスを表示
+        st.info(f"Using device: {device}")  # 使用デバイスを表示
 
-        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-
-        # 4bit量子化の設定
+        # 4-bit 量子化の設定
         bnb_config = BitsAndBytesConfig(
             load_in_4bit=True,
             bnb_4bit_use_double_quant=True,
             bnb_4bit_quant_type="nf4",
-            bnb_4bit_compute_dtype=torch.float16,  # 必要なら float32 に変更
+            bnb_4bit_compute_dtype=torch.float16,  # GPU メモリが厳しければ `float32` に変更
         )
 
-        # モデルの読み込み
+        # トークナイザのロード
+        tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+
+        # 量子化されたモデルの読み込み
         model = AutoModelForCausalLM.from_pretrained(
             MODEL_NAME,
-            quantization_config=bnb_config,
-            device_map="auto"
+            quantization_config=bnb_config,  # ✅ 量子化設定を適用
+            device_map="auto"  # ✅ `auto` で適切なデバイスに割り当て
         )
 
-        # `device` を渡さないよう修正
+        # `pipeline()` には `device` を渡さず、量子化を考慮
         pipe = pipeline(
             "text-generation",
             model=model,
             tokenizer=tokenizer,
-            model_kwargs={"torch_dtype": torch.bfloat16}  # ✅ `device` を削除
+            model_kwargs={"torch_dtype": torch.bfloat16}  # ✅ 量子化対応
         )
 
-        st.success(f"モデル '{MODEL_NAME}' の読み込みに成功しました。")
+        st.success(f"量子化モデル '{MODEL_NAME}' の読み込みに成功しました。")
         return pipe
     except Exception as e:
         st.error(f"モデル '{MODEL_NAME}' の読み込みに失敗しました: {e}")

@@ -7,6 +7,7 @@ from huggingface_hub import login
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig, pipeline
 
 
+
 @st.cache_resource
 def load_model():
     """LLMモデルをロードする"""

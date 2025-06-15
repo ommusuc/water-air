@@ -2,7 +2,6 @@ import streamlit as st
 import test
 import ui
 from config import MODEL_NAME
-from huggingface_hub import login
 import os
 import torch
 from transformers import (
@@ -11,6 +10,12 @@ from transformers import (
     pipeline,
     BitsAndBytesConfig
 )
+from huggingface_hub import HfFolder
+import llm
+
+# --- アプリケーション設定 ---
+st.set_page_config(page_title="Gemma Chatbot", layout="wide")
+
 
 
 # モデルをキャッシュして再利用
